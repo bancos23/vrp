@@ -250,7 +250,6 @@ void selectParents(std::vector<std::unique_ptr<stIndivid>>& population, const st
     {
         p2 = Helpers::getRandomNumber(0, MAX_INDIVIDS - 1);
     } while (p1 == p2);
-
 	printf("Selected parents: %d (%.2f) and %d (%.2f)\n", p1, population[p1]->fitness, p2, population[p2]->fitness);
 
     auto [c1, c2] = crossover(*population[p1], *population[p2], objectList);
