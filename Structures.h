@@ -10,16 +10,19 @@ struct stObject
     uint8_t assignedTir = 0;
 };
 
-struct stTir {
+struct stTir 
+{
     uint16_t totalWeight = 0;
     uint16_t numDeliveries = 0;
     std::vector<stObject> objects;
 };
 
-struct stIndivid {
+struct stIndivid 
+{
     std::vector<stTir> tirs;
     std::vector<stObject> objects;
     float fitness = FLT_MAX;
+    uint8_t lifeSpan = 4;
 };
 
 struct stAparitii

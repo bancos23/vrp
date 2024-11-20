@@ -244,23 +244,34 @@ std::pair<std::unique_ptr<stIndivid>, std::unique_ptr<stIndivid>> crossover(cons
 
 void selectParents(std::vector<std::unique_ptr<stIndivid>>& population, const std::vector<stObject>& objectList)
 {
-    size_t p1 = Helpers::getRandomNumber(0, MAX_INDIVIDS - 1);
+    size_t p1 = Helpers::getRandomNumber(0, population.size() - 1);
     size_t p2 = -1;
     do 
     {
-        p2 = Helpers::getRandomNumber(0, MAX_INDIVIDS - 1);
+        p2 = Helpers::getRandomNumber(0, population.size() - 1);
     } while (p1 == p2);
 	printf("Selected parents: %d (%.2f) and %d (%.2f)\n", p1, population[p1]->fitness, p2, population[p2]->fitness);
+    population[p1]->lifeSpan--;
+	population[p2]->lifeSpan--;
 
     auto [c1, c2] = crossover(*population[p1], *population[p2], objectList);
-
-    printf("%d | %d\n", c1->objects.size(), c2->objects.size());
 
     calculateFitness(*c1);
     calculateFitness(*c2);
     
     printIndivid(*c1, "Child 1");
     printIndivid(*c2, "Child 2");
+
+	population.push_back(std::move(c1));
+	population.push_back(std::move(c2));
+
+    population.erase(
+        std::remove_if(
+            population.begin(), population.end(),
+            [](const std::unique_ptr<stIndivid>& individ) {
+                return individ->lifeSpan < 1;
+            }),
+        population.end());
 }
 
 int main()
@@ -276,6 +287,11 @@ int main()
     for (auto& individ : population)
         calculateFitness(*individ);
 
-    selectParents(population, objectList);
+    for (uint8_t i = 0; i < 100; i++)
+        selectParents(population, objectList);
+
+    for (size_t i = 0; i < population.size(); ++i)
+        printf("Individ %d -> lifeSpan: %d\n", i, population[i]->lifeSpan);
+
     return 0;
 }
