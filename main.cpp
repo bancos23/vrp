@@ -1,11 +1,20 @@
 ﻿#include <main.h>
 
-#define MAX_INDIVIDS 10
+#define MAX_INDIVIDS 100
 #define MAX_DELIVERIES 20   
 #define MAX_WEIGHT_TIR 25000
+#define MAX_GENERATIONS 10
 
 std::random_device rd;
 std::mt19937 g(rd());
+
+void addObjectToTir(stTir& tir, stObject& obj, uint8_t tirId) 
+{
+    obj.assignedTir = tirId;
+    tir.totalWeight += obj.weight;
+    tir.numDeliveries++;
+    tir.objects.push_back(obj);
+}
 
 stObject generateRandomObject(std::set<uint8_t>& usedDestinationIds)
 {
@@ -43,21 +52,17 @@ void initializePopulation(std::vector<std::unique_ptr<stIndivid>>& population, s
 
         printf("Individ %d -> number of deliveries: %d, content: \n", i, MAX_DELIVERIES);
 
-        for (const auto& obj : objectList)
+        for (auto& obj : objectList)
         {
             if (individ->tirs.size() <= currentTir)
                 individ->tirs.emplace_back();
 
             stTir& current = individ->tirs[currentTir];
-            if (current.totalWeight + obj.weight <= MAX_WEIGHT_TIR) {
-                stObject newObj = obj;
-                newObj.assignedTir = currentTir;
-                current.totalWeight += newObj.weight;
-                current.numDeliveries++;
-                current.objects.push_back(newObj);
-                individ->objects.push_back(newObj);
-
-                printf("Added object %s [Weight: %d] to Tir %d [Total Weight: %d]\n", newObj.name.c_str(), newObj.weight, currentTir, current.totalWeight);
+            if (current.totalWeight + obj.weight <= MAX_WEIGHT_TIR) 
+            {
+                addObjectToTir(current, obj, currentTir);
+                individ->objects.push_back(obj);
+                printf("Added object %s [Weight: %d] to Tir %d [Total Weight: %d]\n", obj.name.c_str(), obj.weight, currentTir, current.totalWeight);
             }
             else
             {
@@ -66,14 +71,9 @@ void initializePopulation(std::vector<std::unique_ptr<stIndivid>>& population, s
                 if (individ->tirs.size() <= currentTir)
                     individ->tirs.emplace_back();
 
-                stTir& next = individ->tirs[currentTir];
-                stObject newObj = obj;
-                newObj.assignedTir = currentTir;
-                next.totalWeight += newObj.weight;
-                next.numDeliveries++;
-                next.objects.push_back(newObj);
-                individ->objects.push_back(newObj);
-                printf("Added object %s [Weight: %d] to Tir %d [Total Weight: %d]\n", newObj.name.c_str(), newObj.weight, currentTir, current.totalWeight);
+				addObjectToTir(individ->tirs[currentTir], obj, currentTir);
+                individ->objects.push_back(obj);
+                printf("Added object %s [Weight: %d] to Tir %d [Total Weight: %d]\n", obj.name.c_str(), obj.weight, currentTir, current.totalWeight);
             }
         }
         population.push_back(std::move(individ));
@@ -83,7 +83,6 @@ void initializePopulation(std::vector<std::unique_ptr<stIndivid>>& population, s
 float calculateFitness(stIndivid& individ)
 {
     float totalFitness = 0.0f;
-
     for (const auto& tir : individ.tirs)
         for (size_t j = 0; j < tir.objects.size(); ++j)
             for (size_t k = j + 1; k < tir.objects.size(); ++k)
@@ -155,20 +154,17 @@ void mutate(stIndivid& child, std::vector<uint8_t>& availableIds, const std::vec
     child.objects.clear();
 
     uint8_t currentTir = 0;
-    for (const auto& obj : shadowObjects)
+    for (auto& obj : shadowObjects)
     {
         if (child.tirs.size() <= currentTir)
             child.tirs.emplace_back();
 
         stTir& current = child.tirs[currentTir];
-        if (current.totalWeight + obj.weight <= MAX_WEIGHT_TIR) {
-            stObject newObj = obj;
-            newObj.assignedTir = currentTir;
-            current.totalWeight += newObj.weight;
-            current.numDeliveries++;
-            current.objects.push_back(newObj);
-            child.objects.push_back(newObj);
-            printf("Added object %s [Weight: %d] to Tir %d [Total Weight: %d]\n", newObj.name.c_str(), newObj.weight, currentTir, current.totalWeight);
+        if (current.totalWeight + obj.weight <= MAX_WEIGHT_TIR) 
+        {
+			addObjectToTir(current, obj, currentTir);
+            child.objects.push_back(obj);
+            printf("Added object %s [Weight: %d] to Tir %d [Total Weight: %d]\n", obj.name.c_str(), obj.weight, currentTir, current.totalWeight);
         }
         else
         {
@@ -177,18 +173,12 @@ void mutate(stIndivid& child, std::vector<uint8_t>& availableIds, const std::vec
             if (child.tirs.size() <= currentTir)
                 child.tirs.emplace_back();
 
-            stTir& next = child.tirs[currentTir];
-            stObject newObj = obj;
-            newObj.assignedTir = currentTir;
-            next.totalWeight += newObj.weight;
-            next.numDeliveries++;
-            next.objects.push_back(newObj);
-            child.objects.push_back(newObj);
-            printf("Added object %s [Weight: %d] to Tir %d [Total Weight: %d]\n", newObj.name.c_str(), newObj.weight, currentTir, current.totalWeight);
+			addObjectToTir(child.tirs[currentTir], obj, currentTir);
+            child.objects.push_back(obj);
+            printf("Added object %s [Weight: %d] to Tir %d [Total Weight: %d]\n", obj.name.c_str(), obj.weight, currentTir, current.totalWeight);
         }
     }
 }
-
 
 std::pair<std::unique_ptr<stIndivid>, std::unique_ptr<stIndivid>> crossover(const stIndivid& parent1, const stIndivid& parent2, const std::vector<stObject>& objectList)
 {
@@ -230,7 +220,6 @@ std::pair<std::unique_ptr<stIndivid>, std::unique_ptr<stIndivid>> crossover(cons
         printf("%d ", id);
     printf("\n");
 
-
     printf("Second child missing elements: ");
     for (uint8_t id : missingInChild2)
         printf("%d ", id);
@@ -265,13 +254,10 @@ void selectParents(std::vector<std::unique_ptr<stIndivid>>& population, const st
 	population.push_back(std::move(c1));
 	population.push_back(std::move(c2));
 
-    population.erase(
-        std::remove_if(
-            population.begin(), population.end(),
-            [](const std::unique_ptr<stIndivid>& individ) {
-                return individ->lifeSpan < 1;
-            }),
-        population.end());
+    population.erase(std::remove_if(population.begin(), population.end(),
+        [](const std::unique_ptr<stIndivid>& individ) {
+            return individ->lifeSpan < 1;
+        }), population.end());
 }
 
 int main()
@@ -287,11 +273,17 @@ int main()
     for (auto& individ : population)
         calculateFitness(*individ);
 
-    for (uint8_t i = 0; i < 100; i++)
+    for (uint8_t i = 0; i < MAX_GENERATIONS; i++)
         selectParents(population, objectList);
 
-    for (size_t i = 0; i < population.size(); ++i)
-        printf("Individ %d -> lifeSpan: %d\n", i, population[i]->lifeSpan);
+    for (size_t i = 0; i < population.size(); ++i) 
+    {
+		if (bestFitness > population[i]->fitness)
+			bestFitness = population[i]->fitness;
+        printf("Individ %d [fitness: %f, lifeSpan: %d]\n", i, population[i]->fitness, population[i]->lifeSpan);
+    }
 
+	printf("Best fitness: %f\n", bestFitness);
+    system("pause");
     return 0;
 }
