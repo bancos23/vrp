@@ -262,7 +262,7 @@ void selectParents(std::vector<std::unique_ptr<stIndivid>>& population, const st
 
 int main()
 {
-    static float bestFitness = FLT_MAX;
+    static float bestFitness = MAXFLOAT;
     srand(static_cast<unsigned int>(time(0)));
 
     std::vector<std::unique_ptr<stIndivid>> population;
