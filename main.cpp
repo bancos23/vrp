@@ -260,6 +260,29 @@ void selectParents(std::vector<std::unique_ptr<stIndivid>>& population, const st
         }), population.end());
 }
 
+void tournamentSelect(std::vector<std::unique_ptr<stIndivid>> &population, const std::vector<stObject> &objectList){
+    int TournamentMembersCount = 6; //Number of individuals to participate in tournament
+    std::vector<std::unique_ptr<stIndivid>> TournamentMembers; //Tournament participants
+
+    for (int i = 0; i < TournamentMembersCount; i++){
+        int RandomIndex = Helpers::getRandomNumber(0,population.size() -1);
+        TournamentMembers.push_back(population[RandomIndex]); //Select random individual to participate
+    }
+
+    float BestFitness = MAXFLOAT;
+    stIndivid BestIndivid; //Tournament winner
+
+    for (int i = 0; i < TournamentMembersCount; i++){
+        float CurrentFitness = calculateFitness(*TournamentMembers[i]); //Calculate fitness of current individual
+        if(BestFitness>CurrentFitness){
+            BestFitness = CurrentFitness;
+            BestIndivid = *TournamentMembers[i]; //Store the best individual
+        }
+    }
+
+    printIndivid(BestIndivid, "Tournament winner"); //Print the tournament winner
+}
+
 int main()
 {
     static float bestFitness = MAXFLOAT;
