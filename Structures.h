@@ -21,7 +21,7 @@ struct stIndivid
 {
     std::vector<stTir> tirs;
     std::vector<stObject> objects;
-    float fitness = FLT_MAX;
+    float fitness = MAXFLOAT;
     uint8_t lifeSpan = 4;
 };
 

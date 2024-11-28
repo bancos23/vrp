@@ -10,7 +10,7 @@
 #include <unordered_map>
 #include <map>
 #include <set>
-
+#include <memory>
 #include "Structures.h"
 #include "Helpers.h"
 

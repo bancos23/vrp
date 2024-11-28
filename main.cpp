@@ -1,4 +1,4 @@
-﻿#include <main.h>
+﻿#include "main.h"
 
 #define MAX_INDIVIDS 100
 #define MAX_DELIVERIES 20   
@@ -35,7 +35,7 @@ stObject generateRandomObject(std::set<uint8_t>& usedDestinationIds)
     return obj;
 }
 
-void initializePopulation(std::vector<std::unique_ptr<stIndivid>>& population, std::vector<stObject>& objectList)
+void initializePopulation(std::vector<std::unique_ptr<stIndivid> >& population, std::vector<stObject>& objectList)
 {
     std::set<uint8_t> usedDestinationIds;
 
