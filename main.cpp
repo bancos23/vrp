@@ -233,6 +233,8 @@ std::pair<std::unique_ptr<stIndivid>, std::unique_ptr<stIndivid>> crossover(cons
 
 void selectParents(std::vector<std::unique_ptr<stIndivid>>& population, const std::vector<stObject>& objectList)
 {
+	constexpr uint8_t numParents = 8;
+
     size_t p1 = Helpers::getRandomNumber(0, population.size() - 1);
     size_t p2 = -1;
     do 
@@ -273,7 +275,7 @@ int main()
     for (auto& individ : population)
         calculateFitness(*individ);
 
-    for (uint8_t i = 0; i < MAX_GENERATIONS; i++)
+    for (uint16_t i = 0; i < MAX_GENERATIONS; i++)
         selectParents(population, objectList);
 
     for (size_t i = 0; i < population.size(); ++i) 
