@@ -7,18 +7,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project4", "Project4.vcxpro
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|x64 = Debug|x64
-		Debug|x86 = Debug|x86
-		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{658BE17D-C29F-4ED3-848A-8F29522FC378}.Debug|x64.ActiveCfg = Debug|x64
-		{658BE17D-C29F-4ED3-848A-8F29522FC378}.Debug|x64.Build.0 = Debug|x64
-		{658BE17D-C29F-4ED3-848A-8F29522FC378}.Debug|x86.ActiveCfg = Debug|Win32
-		{658BE17D-C29F-4ED3-848A-8F29522FC378}.Debug|x86.Build.0 = Debug|Win32
-		{658BE17D-C29F-4ED3-848A-8F29522FC378}.Release|x64.ActiveCfg = Release|x64
-		{658BE17D-C29F-4ED3-848A-8F29522FC378}.Release|x64.Build.0 = Release|x64
 		{658BE17D-C29F-4ED3-848A-8F29522FC378}.Release|x86.ActiveCfg = Release|Win32
 		{658BE17D-C29F-4ED3-848A-8F29522FC378}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
