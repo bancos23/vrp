@@ -16,3 +16,6 @@
 
 
 #include <iomanip>
+
+void addObjectToTir(stTir& tir, stObject& obj, size_t tirId);
+stObject generateRandomObject(std::set<uint8_t>& usedDestinationIds);

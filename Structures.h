@@ -7,7 +7,7 @@ struct stObject
     std::string destinationName;
     float destLong, destLat;
     uint16_t weight;
-    uint8_t assignedTir = 0;
+    size_t assignedTir = 0;
 };
 
 struct stTir 
@@ -23,6 +23,11 @@ struct stIndivid
     std::vector<stObject> objects;
     float fitness = FLT_MAX;
     uint8_t lifeSpan = 4;
+};
+
+struct stGeneration 
+{
+	std::vector<std::unique_ptr<stIndivid>> population;
 };
 
 struct stAparitii
