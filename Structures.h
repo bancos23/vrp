@@ -5,7 +5,8 @@ struct stObject
     std::string name;
     uint8_t destinationId;
     std::string destinationName;
-    float destLong, destLat;
+    float destLong;
+    float destLat;
     uint16_t weight;
     size_t assignedTir = 0;
 };

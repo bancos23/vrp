@@ -1,10 +1,10 @@
 ﻿#include <main.h>
 
-#define MAX_INDIVIDS 100
-#define MAX_DELIVERIES 20   
-#define MAX_WEIGHT_TIR 25000
-#define MAX_GENERATIONS 10
-#define MAX_TOURNAMENT_SIZE 5
+constexpr auto MAX_INDIVIDS = 100;
+constexpr auto MAX_DELIVERIES = 20   ;
+constexpr auto MAX_WEIGHT_TIR = 25000;
+constexpr auto MAX_GENERATIONS = 10;
+constexpr auto MAX_TOURNAMENT_SIZE = 5;
 
 #define DEBUG
 
@@ -301,9 +301,8 @@ auto createParent(std::vector<std::unique_ptr<stIndivid>>& population)
 
 void selectParents(std::vector<std::unique_ptr<stIndivid>>& population, const std::vector<stObject>& objectList, float mutationRate)
 {
-    size_t p1, p2;
-	p1 = createParent(population);
-	p2 = createParent(population);
+	size_t p1 = createParent(population);
+	size_t p2 = createParent(population);
 
     DEBUG_LOG("Selected parents: %d (%.2f) and %d (%.2f)\n", p1, population[p1]->fitness, p2, population[p2]->fitness);
     population[p1]->lifeSpan--;
@@ -332,7 +331,7 @@ void selectParents(std::vector<std::unique_ptr<stIndivid>>& population, const st
 int main()
 {
     static float bestFitness = FLT_MAX;
-    srand(static_cast<unsigned int>(time(0)));
+    srand(static_cast<unsigned int>(time(nullptr)));
 
     auto generation = new stGeneration();
     std::vector<stObject> objectList;
