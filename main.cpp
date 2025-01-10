@@ -1,7 +1,7 @@
 ﻿#include <main.h>
 
 constexpr auto MAX_INDIVIDS = 100;
-constexpr auto MAX_DELIVERIES = 20   ;
+constexpr auto MAX_DELIVERIES = 20;
 constexpr auto MAX_WEIGHT_TIR = 25000;
 constexpr auto MAX_GENERATIONS = 10;
 constexpr auto MAX_TOURNAMENT_SIZE = 5;
@@ -46,7 +46,7 @@ stObject generateRandomObject(std::set<uint8_t>& usedDestinationIds)
     return obj;
 }
 
-void initializePopulation(std::vector<std::unique_ptr<stIndivid>>& population, std::vector<stObject>& objectList)
+static void initializePopulation(std::vector<std::unique_ptr<stIndivid>>& population, std::vector<stObject>& objectList)
 {
     std::set<uint8_t> usedDestinationIds;
 
@@ -89,7 +89,7 @@ void initializePopulation(std::vector<std::unique_ptr<stIndivid>>& population, s
     }
 }
 
-float calculateFitness(stIndivid& individ)
+static float calculateFitness(stIndivid& individ)
 {
     float totalFitness = 0.0f;
     for (const auto& tir : individ.tirs)
@@ -101,7 +101,7 @@ float calculateFitness(stIndivid& individ)
     return totalFitness;
 }
 
-void printIndivid(stIndivid& individ, const std::string& name)
+static void printIndivid(stIndivid& individ, const std::string& name)
 {
     DEBUG_LOG("%s:\n", name.c_str());
     DEBUG_LOG("Fitness: %f\n", individ.fitness);
@@ -114,7 +114,7 @@ void printIndivid(stIndivid& individ, const std::string& name)
     }
 }
 
-void mutate(stIndivid& child, std::vector<uint8_t>& availableIds, const std::vector<stObject>& objectList)
+static void mutate(stIndivid& child, std::vector<uint8_t>& availableIds, const std::vector<stObject>& objectList)
 {
     std::vector<stObject> shadowObjects = child.objects;
     std::map<uint8_t, stAparitii> apparitionMap;
@@ -210,7 +210,9 @@ std::pair<std::unique_ptr<stIndivid>, std::unique_ptr<stIndivid>> crossover(cons
     for (const stObject& obj : child2->objects)
         DEBUG_LOG("Object %s [Weight: %d]\n", obj.name.c_str(), obj.weight);
 
-    std::vector<uint8_t> allIds, child1Ids, child2Ids;
+    std::vector<uint8_t> allIds;
+    std::vector<uint8_t> child1Ids;
+    std::vector<uint8_t> child2Ids;
     for (const auto& obj : objectList) allIds.push_back(obj.destinationId);
     for (const auto& obj : child1->objects) child1Ids.push_back(obj.destinationId);
     for (const auto& obj : child2->objects) child2Ids.push_back(obj.destinationId);
@@ -219,7 +221,8 @@ std::pair<std::unique_ptr<stIndivid>, std::unique_ptr<stIndivid>> crossover(cons
     std::sort(child1Ids.begin(), child1Ids.end());
     std::sort(child2Ids.begin(), child2Ids.end());
 
-    std::vector<uint8_t> missingInChild1, missingInChild2;
+    std::vector<uint8_t> missingInChild1;
+    std::vector<uint8_t> missingInChild2;
     std::set_difference(allIds.begin(), allIds.end(), child1Ids.begin(), child1Ids.end(), std::back_inserter(missingInChild1));
     std::set_difference(allIds.begin(), allIds.end(), child2Ids.begin(), child2Ids.end(), std::back_inserter(missingInChild2));
 
